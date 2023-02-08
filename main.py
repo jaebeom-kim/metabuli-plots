@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 from matplotlib.patches import Patch
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset, inset_axes, zoomed_inset_axes
 
 
 def hiv_and_gtdb() -> None:
@@ -27,6 +28,7 @@ def hiv_and_gtdb() -> None:
 
     # Set figure size
     fig, axs = plt.subplots(2, 2, sharex='all', sharey='all', figsize=(10, 10))
+
     # fig.add_subplot(111, frameon=False, xticks=[], yticks=[])
     # plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)
     # plt.xlabel('Sensitivity', fontsize=15, fontweight='bold', fontfamily='Arial')
@@ -40,6 +42,11 @@ def hiv_and_gtdb() -> None:
     # Subplot titles
     titles = [['HIV-1 Inclusion Test', 'HIV-1 Exclusion Test'],
               ['GTDB Inclusion Test', 'GTDB Exclusion Test']]
+    # Panel labels
+    labels = [['a', 'b'],
+              ['c', 'd']]
+    x_pos = 0
+    y_pos = 1.04
 
     # Set x and y limits
     axs[0, 0].set_xlim(0, 1.02)
@@ -61,7 +68,10 @@ def hiv_and_gtdb() -> None:
                                         s=marker_size,  # marker size
                                         data=data[i][j], ax=axs[i, j])
             # Set title
-            axs[i, j].set_title(titles[i][j], fontsize=12, fontweight='bold', fontfamily='Arial')
+            axs[i, j].set_title(titles[i][j], fontsize=15, fontweight='bold', fontfamily='Arial')
+
+            # Add panel labels
+            axs[i, j].text(x_pos, y_pos, labels[i][j], fontsize=15, fontweight='bold', fontfamily='Arial')
 
             # Remove x and y labels
             axs[i, j].set_xlabel('')
@@ -115,9 +125,10 @@ def cami_gtdb() -> None:
 
     # Set x and y limits
     axs[0, 0].set_xlim(0, 1.02)
-    axs[0, 0].set_ylim(0.4, 1.02)
+    axs[0, 0].set_ylim(0, 1.02)
     axs[0, 0].xaxis.set_ticks(np.arange(0, 1.02, 0.1))
-    axs[0, 0].yaxis.set_ticks(np.arange(0.4, 1.02, 0.1))
+    axs[0, 0].yaxis.set_ticks(np.arange(0, 1.02, 0.1))
+    # axs[0, 1].set_xlim(0.4, 1.02)
 
     # Subplot titles
     titles = [['Strain-madness', 'Marine'],
@@ -154,21 +165,49 @@ def cami_gtdb() -> None:
             else:
                 axs[i, j].legend(loc='lower right', markerscale=2, fontsize=12, edgecolor='black')
 
+            # Zoom in [0, 1]
+            if i == 0 and j == 1:
+                axins = inset_axes(axs[i, j], loc='lower left', width=3, height=3, borderpad=0.5)
+                axins = sns.scatterplot(x='Sensitivity', y='Precision',
+                                        hue='Tool',  # different colors by group
+                                        style='Rank',  # different shapes by group
+                                        hue_order=order,
+                                        style_order=rank_order,
+                                        edgecolor='black',
+                                        palette=colors,
+                                        markers=markers,
+                                        s=marker_size,  # marker size
+                                        data=data[i][j], ax=axins)
+                # Adjust the size of the zoomed-in plot
+                axins.set_xlim(0.5, 1.0)
+                axins.set_ylim(0.9, 1.0)
+                axins.set_autoscale_on(True)
+                mark_inset(axs[i, j], axins, loc1=2, loc2=4, fc="none", ec="0.5")
+
+                # fix the number of ticks on the inset axes
+                axins.yaxis.get_major_locator().set_params(nbins=3)
+                axins.xaxis.get_major_locator().set_params(nbins=3)
+                axins.legend_.remove()
+                axins.set_xlabel('')
+                axins.set_ylabel('')
+
     # Remove plot in axs[1,1]
     axs[1, 1].remove()
 
     # Add x tick labels to axs[0,1] and make visible
     axs[0, 1].set_xticklabels(['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0'])
+    # axs[0, 1].set_xticklabels(['0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0'])
     axs[0, 1].tick_params(axis='x', which='both', labelbottom=True)
 
     # Set common x and y labels
-    fig.text(0.5, 0.04, 'Sensitivity', ha='center', va='center', fontsize=15, fontweight='bold', fontfamily='Arial')
+    fig.text(0.28, 0.04, 'Sensitivity', ha='center', va='center', fontsize=15, fontweight='bold', fontfamily='Arial')
     fig.text(0.04, 0.5, 'Precision', ha='center', va='center', rotation='vertical', fontsize=15, fontweight='bold',
              fontfamily='Arial')
 
     plt.tight_layout()
     plt.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9)
     plt.show()
+
 
 def covid19_in() -> None:
     # sns.set_style('whitegrid')
@@ -316,8 +355,131 @@ def covid_ex() -> None:
     plt.show()
 
 
+def distribution() -> None:
+    sns.set_context('paper', font_scale=1.5, rc={'lines.linewidth': 2.5})
+
+    # Load Data
+    # gtdb_genus_tp = pd.read_csv('/Users/jaebeom/metabuli-dist/genus20_141_classifications.tsv.genus.tp', sep='\t',
+    #                             header=None)
+    # gtdb_genus_fp = pd.read_csv('/Users/jaebeom/metabuli-dist/genus20_141_classifications.tsv.genus.fp', sep='\t',
+    #                             header=None)
+    # gtdb_species_tp = pd.read_csv('/Users/jaebeom/metabuli-dist/strain20_141_classifications.tsv.species.tp', sep='\t',
+    #                               header=None)
+    # gtdb_species_fp = pd.read_csv('/Users/jaebeom/metabuli-dist/strain20_141_classifications.tsv.species.fp', sep='\t',
+    #                               header=None)
+    #
+    # virus_genus_tp = pd.read_csv('/Users/jaebeom/metabuli-dist/genus141_classifications.tsv.genus.tp', sep='\t',
+    #                              header=None)
+    # virus_genus_fp = pd.read_csv('/Users/jaebeom/metabuli-dist/genus141_classifications.tsv.genus.fp', sep='\t',
+    #                              header=None)
+    # virus_species_tp = pd.read_csv('/Users/jaebeom/metabuli-dist/species141_classifications.tsv.species.tp', sep='\t',
+    #                                header=None)
+    # virus_species_fp = pd.read_csv('/Users/jaebeom/metabuli-dist/species141_classifications.tsv.species.fp', sep='\t',
+    #                                header=None)
+    #
+    # pd.to_pickle(gtdb_genus_tp, '/Users/jaebeom/metabuli-dist/gtdb_genus_tp.pkl')
+    # pd.to_pickle(gtdb_genus_fp, '/Users/jaebeom/metabuli-dist/gtdb_genus_fp.pkl')
+    # pd.to_pickle(gtdb_species_tp, '/Users/jaebeom/metabuli-dist/gtdb_species_tp.pkl')
+    # pd.to_pickle(gtdb_species_fp, '/Users/jaebeom/metabuli-dist/gtdb_species_fp.pkl')
+    #
+    # pd.to_pickle(virus_genus_tp, '/Users/jaebeom/metabuli-dist/virus_genus_tp.pkl')
+    # pd.to_pickle(virus_genus_fp, '/Users/jaebeom/metabuli-dist/virus_genus_fp.pkl')
+    # pd.to_pickle(virus_species_tp, '/Users/jaebeom/metabuli-dist/virus_species_tp.pkl')
+    # pd.to_pickle(virus_species_fp, '/Users/jaebeom/metabuli-dist/virus_species_fp.pkl')
+
+    gtdb_genus_tp = pd.read_pickle('/Users/jaebeom/metabuli-dist/gtdb_genus_tp.pkl')
+    gtdb_genus_fp = pd.read_pickle('/Users/jaebeom/metabuli-dist/gtdb_genus_fp.pkl')
+    gtdb_species_tp = pd.read_pickle('/Users/jaebeom/metabuli-dist/gtdb_species_tp.pkl')
+    gtdb_species_fp = pd.read_pickle('/Users/jaebeom/metabuli-dist/gtdb_species_fp.pkl')
+
+    virus_genus_tp = pd.read_pickle('/Users/jaebeom/metabuli-dist/virus_genus_tp.pkl')
+    virus_genus_fp = pd.read_pickle('/Users/jaebeom/metabuli-dist/virus_genus_fp.pkl')
+    virus_species_tp = pd.read_pickle('/Users/jaebeom/metabuli-dist/virus_species_tp.pkl')
+    virus_species_fp = pd.read_pickle('/Users/jaebeom/metabuli-dist/virus_species_fp.pkl')
+
+    # Set figure size
+    fig, axs = plt.subplots(2, 4, sharex='all', sharey='all', figsize=(14, 7))
+
+    # Subtitle
+    titles = [['Prokaryote', 'Virus', 'Prokaryote', 'Virus'],
+              ['Prokaryote', 'Virus', 'Prokaryote', 'Virus']]
+    subtitle_size = 14
+
+    # Panel label
+    panel_label = [['a', 'b', 'c', 'd'],
+                  ['e', 'f', 'g', 'h']]
+    x_pos = 0
+    y_pos = 1.01
+
+    # Data
+    data = [[gtdb_genus_tp[0], virus_genus_tp[0], gtdb_species_tp[0], virus_species_tp[0]],
+            [gtdb_genus_fp[0], virus_genus_fp[0], gtdb_species_fp[0], virus_species_fp[0]]]
+
+    # Color
+    colors = [['darkgreen', 'darkgreen', 'limegreen', 'limegreen'],
+              ['coral', 'coral', 'orange', 'orange']]
+
+    # Set y limit
+    axs[0, 0].set_ylim(0, 0.5)
+    axs[0, 0].xaxis.set_ticks([0, 0.15, 0.5, 1])
+    axs[0, 0].xaxis.set_ticklabels([0, 0.15, 0.5, 1])
+
+    # Plot histogram
+    for i in range(2):
+        for j in range(4):
+            axs[i, j].hist(data[i][j], bins=42, color=colors[i][j], weights=np.ones_like(data[i][j]) / len(data[i][j]))
+            axs[i, j].set_title(titles[i][j], fontfamily='Arial', fontsize=subtitle_size, weight='bold')
+            axs[i, j].margins(0)
+            # Add a vertical line at 0.15
+            axs[i, j].axvline(x=0.15, color='black', linestyle='--', linewidth=1)
+
+            # Add a horizontal two-headed arrow spanning from 0.15 to 1.0
+            axs[i, j].annotate('', xy=(0.15, 0.4), xytext=(1, 0.4), arrowprops=dict(arrowstyle='<->', color='black'))
+
+            # Panel label
+            axs[i, j].text(x_pos, y_pos, panel_label[i][j], transform=axs[i, j].transAxes, fontsize=14,
+                           fontweight='bold', fontfamily='Arial', va='bottom', ha='left')
+
+            # Set the font style of x and y-axis tick labels
+            for tick in axs[i, j].get_xticklabels():
+                tick.set_fontname('Arial')
+            for tick in axs[i, j].get_yticklabels():
+                tick.set_fontname('Arial')
+
+            if i == 0 and (j == 2 or j == 3):
+                # Add a vertical line at 0.5
+                axs[i, j].axvline(x=0.5, color='red', linestyle='--', linewidth=1)
+                # Write the percentage of the number of samples that have a score higher than 0.5
+                axs[i, j].text(0.75, 0.6, f'{100 * (data[i][j] > 0.5).sum() / len(data[i][j]):.1f}%',
+                               transform=axs[i, j].transAxes, color='red', weight='bold', fontsize=14,
+                               fontfamily='Arial', verticalalignment='bottom',
+                               horizontalalignment='center')
+                axs[i, j].annotate('', xy=(0.5, 0.3), xytext=(1, 0.3),
+                                   arrowprops=dict(arrowstyle='<->', color='red'))
+                axs[i, j].text(0.65, 0.8, f'{100 * (data[i][j] > 0.15).sum() / len(data[i][j]):.1f}%',
+                               transform=axs[i, j].transAxes, color='black', weight='bold', fontsize=14,
+                               fontfamily='Arial', verticalalignment='bottom',
+                               horizontalalignment='center')
+            else:
+                axs[i, j].text(0.6, 0.8, f'{100 * (data[i][j] > 0.15).sum() / len(data[i][j]):.1f}%',
+                               transform=axs[i, j].transAxes, color='black', weight='bold', fontsize=14,
+                               fontfamily='Arial', verticalalignment='bottom',
+                               horizontalalignment='center')
+
+    # Set x,y label
+    fig.text(0.5, 0.03, 'Classification Score', ha='center', fontfamily='Arial', fontsize=18, weight='bold')
+    fig.text(0.07, 0.5, 'Relative Frequency', va='center', rotation='vertical', fontfamily='Arial', fontsize=18,
+             weight='bold')
+
+    # Set figure background transparent
+    fig.patch.set_alpha(0)
+
+    plt.show()
+
+
 if __name__ == '__main__':
     # covid_ex()
-    #covid19_in()
-   # hiv_and_gtdb()
+    # covid19_in()
+    # hiv_and_gtdb()
     cami_gtdb()
+    # distribution()
