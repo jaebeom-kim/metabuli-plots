@@ -7,23 +7,23 @@ import numpy as np
 def distribution() -> None:
     sns.set_context('paper', font_scale=1.5, rc={'lines.linewidth': 2.5})
 
-    # Load Data
-    gtdb_genus_tp = pd.read_csv('./prokaryote/genus_sequel_1110_classifications.tsv.genus.tp', sep='\t', header=None)
-    gtdb_genus_fp = pd.read_csv('./prokaryote/genus_sequel_1110_classifications.tsv.genus.fp', sep='\t', header=None)
-    gtdb_species_tp = pd.read_csv('./prokaryote/strain_sequel_1110_classifications.tsv.species.tp', sep='\t', header=None)
-    gtdb_species_fp = pd.read_csv('./prokaryote/strain_sequel_1110_classifications.tsv.species.fp', sep='\t', header=None)
-
-    # Remove the second column
-    # gtdb_genus_tp = gtdb_genus_tp.drop(columns=0)
-    # gtdb_genus_fp = gtdb_genus_fp.drop(columns=0)
-    # gtdb_species_tp = gtdb_species_tp.drop(columns=0)
-    # gtdb_species_fp = gtdb_species_fp.drop(columns=0)
-
-    virus_genus_tp = pd.read_csv('./virus/genus_sequel_1110_classifications.tsv.genus.tp', sep='\t', header=None)
-    virus_genus_fp = pd.read_csv('./virus/genus_sequel_1110_classifications.tsv.genus.fp', sep='\t', header=None)
-    virus_species_tp = pd.read_csv('./virus/strain_sequel_1110_classifications.tsv.species.tp', sep='\t', header=None)
-    virus_species_fp = pd.read_csv('./virus/strain_sequel_1110_classifications.tsv.species.fp', sep='\t', header=None)
-
+    # # Load Data
+    gtdb_genus_tp = pd.read_csv('./prokaryote/genus_sequel_ccs_1110_classifications.tsv.genus.tp', sep='\t', header=None)
+    gtdb_genus_fp = pd.read_csv('./prokaryote/genus_sequel_ccs_1110_classifications.tsv.genus.fp', sep='\t', header=None)
+    gtdb_species_tp = pd.read_csv('./prokaryote/strain_sequel_ccs_1110_classifications.tsv.species.tp', sep='\t', header=None)
+    gtdb_species_fp = pd.read_csv('./prokaryote/strain_sequel_ccs_1110_classifications.tsv.species.fp', sep='\t', header=None)
+    #
+    # # Remove the second column
+    # # gtdb_genus_tp = gtdb_genus_tp.drop(columns=0)
+    # # gtdb_genus_fp = gtdb_genus_fp.drop(columns=0)
+    # # gtdb_species_tp = gtdb_species_tp.drop(columns=0)
+    # # gtdb_species_fp = gtdb_species_fp.drop(columns=0)
+    #
+    virus_genus_tp = pd.read_csv('./virus/genus_sequel_ccs_1120_classifications.tsv.genus.tp', sep='\t', header=None)
+    virus_genus_fp = pd.read_csv('./virus/genus_sequel_ccs_1120_classifications.tsv.genus.fp', sep='\t', header=None)
+    virus_species_tp = pd.read_csv('./virus/strain_sequel_ccs_1120_classifications.tsv.species.tp', sep='\t', header=None)
+    virus_species_fp = pd.read_csv('./virus/strain_sequel_ccs_1120_classifications.tsv.species.fp', sep='\t', header=None)
+    #
     # pd.to_pickle(gtdb_genus_tp, './pkls/illumina_gtdb_genus_tp.pkl')
     # pd.to_pickle(gtdb_genus_fp, './pkls/illumina_gtdb_genus_fp.pkl')
     # pd.to_pickle(gtdb_species_tp, './pkls/illumnia_gtdb_species_tp.pkl')
@@ -34,15 +34,6 @@ def distribution() -> None:
     # pd.to_pickle(virus_species_tp, './pkls/illumina_virus_species_tp.pkl')
     # pd.to_pickle(virus_species_fp, './pkls/illumina_virus_species_fp.pkl')
 
-    # gtdb_genus_tp = pd.read_pickle('./dist/gtdb_genus_tp.pkl')
-    # gtdb_genus_fp = pd.read_pickle('./dist/gtdb_genus_fp.pkl')
-    # gtdb_species_tp = pd.read_pickle('./dist/gtdb_species_tp.pkl')
-    # gtdb_species_fp = pd.read_pickle('./dist/gtdb_species_fp.pkl')
-    #
-    # virus_genus_tp = pd.read_pickle('./dist/virus_genus_tp.pkl')
-    # virus_genus_fp = pd.read_pickle('./dist/virus_genus_fp.pkl')
-    # virus_species_tp = pd.read_pickle('./dist/virus_species_tp.pkl')
-    # virus_species_fp = pd.read_pickle('./dist/virus_species_fp.pkl')
 
     # Set figure size
     fig, axs = plt.subplots(2, 4, sharex='all', sharey='all', figsize=(14, 7))
@@ -65,22 +56,22 @@ def distribution() -> None:
     # Color
     colors = [['darkgreen', 'darkgreen', 'limegreen', 'limegreen'],
               ['coral', 'coral', 'orange', 'orange']]
-    # colors = [['gr', 'darkgreen', 'limegreen', 'limegreen'],
-    #           ['coral', 'coral', 'orange', 'orange']]
 
     # Set y limit
-    axs[0, 0].set_xlim(0, 0.03)
-    axs[0, 0].set_ylim(0, 0.1)
+    max_y = 0.3
+    axs[0, 0].set_xlim(0, 1)
+    axs[0, 0].set_ylim(0, max_y)
     # axs[0, 0].xaxis.set_ticks([0, 0.15, 0.5, 1])
     # axs[0, 0].xaxis.set_ticklabels([0, 0.15, 0.5, 1])
 
     # Second y-axis ranges
-    y_ranges = [[7000, 200, 7000, 200],
-                [7000, 200, 7000, 200]]
+    y_ranges = [[5000, 200, 20000, 200],
+                [5000, 200, 20000, 200]]
 
-    bins = [[1000, 1000, 1000, 1000],
-            [1000, 1000, 1000, 1000]]
-
+    bins = [[100, 100, 100, 100],
+            [100, 100, 100, 100]]
+    min_score = 0.07
+    min_sp_score = 0.3
     secondary_ax = []
     # Plot histogram
     for i in range(2):
@@ -100,17 +91,17 @@ def distribution() -> None:
             axs[i, j].margins(0)
 
             # Add a vertical line at 0.15
-            axs[i, j].axvline(x=0.0055, color='black', linestyle='--', linewidth=1)
+            axs[i, j].axvline(x=min_score, color='black', linestyle='--', linewidth=1)
 
             # Add a text explaining the vertical line
             if i == 0 and j == 0:
-                axs[i, j].text(0.15, 0.12, 'Min. score\nto be classified\n(0.0055)', transform=axs[i, j].transAxes, fontsize=11,
+                axs[i, j].text(min_score + 0.02, 0.12, 'Min. score\nto be classified\n(0.07)', transform=axs[i, j].transAxes, fontsize=11,
                                fontweight='bold', fontfamily='Arial', va='bottom', ha='left')
                 # axs[i, j].text(0.15, 0.07, '0.15', transform=axs[i, j].transAxes, fontsize=11,
                 #                fontweight='bold', fontfamily='Arial', va='bottom', ha='left')
 
             # Add a horizontal two-headed arrow spanning from 0.15 to 1.0
-            axs[i, j].annotate('', xy=(0.0055, 0.47), xytext=(1, 0.47), arrowprops=dict(arrowstyle='<->', color='black'))
+            axs[i, j].annotate('', xy=(min_score, max_y * 0.8), xytext=(1, max_y * 0.8), arrowprops=dict(arrowstyle='<->', color='black'))
 
             # Panel label
             axs[i, j].text(x_pos, y_pos, panel_label[i][j], transform=axs[i, j].transAxes, fontsize=14,
@@ -122,10 +113,29 @@ def distribution() -> None:
             for tick in axs[i, j].get_yticklabels():
                 tick.set_fontname('Arial')
 
-            axs[i, j].text(0.6, 0.8, f'{100 * (data[i][j] > 0.0055).sum() / len(data[i][j]):.1f}%',
+            axs[i, j].text((min_score + 1)/2, 0.8, f'{100 * (data[i][j] > min_score).sum() / len(data[i][j]):.1f}%',
                            transform=axs[i, j].transAxes, color='black', weight='bold', fontsize=14,
                            fontfamily='Arial', verticalalignment='bottom',
                            horizontalalignment='center')
+
+            if j == 2 or j == 3:
+                # Add a vertical line at 0.5
+                axs[i, j].axvline(x=min_sp_score, color='red', linestyle='--', linewidth=1)
+
+                # Add a text explaining the vertical line
+                if j == 2 and i == 0:
+                    axs[i, j].text(min_sp_score+0.02, 0.012, 'Min. score \nto be classified\nat species rank\n(0.3)',
+                                   transform=axs[i, j].transAxes, color='red', weight='bold', fontsize=11,
+                                   fontfamily='Arial', verticalalignment='bottom',
+                                   horizontalalignment='left')
+
+                # Write the percentage of the number of samples that have a score higher than 0.5
+                axs[i, j].text((1 + min_sp_score)/2, 0.6, f'{100 * (data[i][j] > min_sp_score).sum() / len(data[i][j]):.1f}%',
+                               transform=axs[i, j].transAxes, color='red', weight='bold', fontsize=14,
+                               fontfamily='Arial', verticalalignment='bottom',
+                               horizontalalignment='center')
+                axs[i, j].annotate('', xy=(min_sp_score, max_y * 0.6), xytext=(1, max_y * 0.6),
+                                   arrowprops=dict(arrowstyle='<->', color='red'))
 
     # Set x,y label
     fig.text(0.5, 0.03, 'Sequence Similarity Score', ha='center', fontfamily='Arial', fontsize=18, weight='bold')
@@ -140,7 +150,7 @@ def distribution() -> None:
     fig.patch.set_alpha(0)
 
     # Save figure
-    plt.savefig('sequel_score.png', dpi=300, bbox_inches='tight', transparent=True)
+    plt.savefig('sequel_ccs_score.png', dpi=300, bbox_inches='tight', transparent=True)
 
     plt.show()
 
