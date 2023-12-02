@@ -1,8 +1,0 @@
-Tool	Precision	Sensitivity
-Kraken2	0.992162	0.973532
-KrakenUniq	0.999071	0.984245
-Centrifuge	0.997544	0.978427
-Kaiju	0.966202	0.736021
-Kraken2X	0.90399	0.676659
-MMseqs2	0.999905	0.299064
-Metabuli	0.999276	0.936653
