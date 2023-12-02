@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 from matplotlib import patches
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset, inset_axes, zoomed_inset_axes
 
 
 def prokaryote_all():
@@ -11,8 +12,8 @@ def prokaryote_all():
     plt.rcParams['axes.linewidth'] = 1.5
     plt.rcParams['grid.linewidth'] = 1
     plt.rcParams['grid.linestyle'] = '--'
-    plt.rcParams['figure.figsize'] = [16, 12]
-    fig, axs = plt.subplots(3, 4, sharex='all', sharey='all', figsize=(12, 9))
+    plt.rcParams['figure.figsize'] = [18, 12]
+    fig, axs = plt.subplots(3, 4, sharex='all', sharey='all', figsize=(12, 10), gridspec_kw={'hspace': 0.5, 'wspace': 0.1})
     # Read data
     # Subspecies-level
     ssp_short_data = pd.read_csv('gtdb/revision/inclusion/inclusion_short.tsv', sep='\t')
@@ -47,7 +48,7 @@ def prokaryote_all():
     # Scatter plot parameters
     order = ["Metabuli", "Metabuli-P", 'KrakenUniq', 'Kraken2',
              'Centrifuge', 'Metamaps', 'Kraken2X',
-             'Kaiju', 'MMseqs2', 'Ensemble']
+             'Kaiju', 'MMseqs2', 'Hybrid']
     markers = ['o', 's', 'H', 'D',
                'v', ">", 'P',
                'X', 'd']
@@ -55,14 +56,6 @@ def prokaryote_all():
               '#FFC208', '#FFC208', '#38BF66',
               '#38BF66', '#38BF66', 'dimgray']
 
-    # order = ["Metabuli", "Metabuli-P", 'KrakenUniq', 'Kraken2',
-    #          'Centrifuge', 'Metamaps', 'Kraken2X', 'Kaiju', 'MMseqs2', 'Ensemble']
-    # markers = ['o', 's', 'H', 'D',
-    #            'v', "<", ">", 'P',
-    #            'X', 'd']
-    # colors = ['#D81B1B', '#E51EC3', '#FFC208', '#FFC208',
-    #           '#FFC208', '#FFC208', '#FFC208', '#38BF66',
-    #           '#38BF66', '#38BF66', 'dimgray']
     marker_size = 100
 
     # Things for each panel
@@ -77,37 +70,56 @@ def prokaryote_all():
               ['i', 'j', 'k', 'l']]
     x_pos = 0
     y_pos = 1.1
-    zoom_xlims_min = [0.8, 0.8, 0.75]
-    zoom_xlims_max = [0.9, 0.9, 0.85]
-    zoom_ylims_min = [0.9, 0.9, 0.89]
-    zoom_ylims_max = [1, 1, 0.99]
-    zoom_width = [0.9, 1.8, 1.8]
-    zoom_height = [1.8, 1.8, 1.8]
+    zoom_xlims_min = [[0.3, 0.5, 0.4, 0.4],
+                      [0.8, 0.8, 0.8, 0.7],
+                      [0.4, 0.5, 0.25, 0.1]]
 
-    # # Make subplots
-    # panels = gridspec.GridSpec(3, 4)
-    # gs_short = gridspec.GridSpecFromSubplotSpec(1, 1, subplot_spec=panels[0])
-    # gs_ont = gridspec.GridSpecFromSubplotSpec(1, 1, subplot_spec=panels[1])
-    # gs_sequel = gridspec.GridSpecFromSubplotSpec(1, 1, subplot_spec=panels[2])
-    # short_panel = plt.subplot(gs_short[0])
-    # ont_panel = plt.subplot(gs_ont[0])
-    # sequel_panel = plt.subplot(gs_sequel[0])
-    # axs = [short_panel, ont_panel, sequel_panel]
-    #
-    # ont_panel.set_xlabel('Recall (TP / # of reads)', fontsize=14, fontweight='bold', fontfamily='Arial')
-    # # ont_panel.xaxis.set_label_coords(2.3, -0.15)
-    # short_panel.set_ylabel('Precision (TP / TP+FP)', fontsize=14, fontweight='bold', fontfamily='Arial')
-    # # gtdb_in_short.yaxis.set_label_coords(-0.15, 0)
+    zoom_xlims_max = [[0.5, 0.8, 0.7, 0.6],
+                      [0.9, 1, 0.9, 0.9],
+                      [0.51, 0.75, 0.47, 0.32]]
+
+    zoom_ylims_min = [[0.9, 0.8, 0.8, 0.8],
+                      [0.9, 0.9, 0.9, 0.8],
+                      [0.6, 0.6, 0.55, 0.45]]
+
+    zoom_ylims_max = [[1.01, 1.01, 1, 1],
+                      [1, 1, 1, 1],
+                      [0.85, 0.75, 0.65, 0.75]]
+
+    zoom_locs = [['lower right', 4, 4, 4],
+                 [4, 4, 4, 4],
+                 [1, 3, 1, 1]]
+
+    zoom_loc1s = [[2, 1, 1, 1],
+                  [1, 1, 1, 1],
+                  [3, 4, 2, 2]]
+
+    zoom_loc2s = [[1, 2, 2, 2],
+                  [2, 2, 2, 2],
+                  [2, 2, 3, 3]]
+
+    zoom_widths = [[1.2, 1.2, 1.2, 1.2],
+                   [1.2, 1.2, 1.2, 1.2],
+                   [0.8, 0.8, 0.6, 0.8]]
+
+    zoom_heights = [[1.2, 1.2, 1.2, 1.2],
+                    [1.2, 1.2, 1.2, 1.2],
+                    [1.2, 1.2, 1.2, 1.2]]
+
     rank = ['Subspecies', 'Species', 'Genus']
     for i in range(3):
         for j in range(4):
             data[i][j] = data[i][j][data[i][j]['Tool'] != 'Metamaps_EM']
             axs[i, j].set_title(titles[i][j], fontsize=13, fontweight='bold', fontfamily='Arial')
-            axs[i, j].set_xlim(0.0, 1.05)
-            axs[i, j].set_ylim(0.0, 1.05)
+            axs[i, j].set_xlim(0.0, 1.03)
+            axs[i, j].set_ylim(0.0, 1.03)
             axs[i, j].spines[['right', 'top']].set_visible(False)
             axs[i, j].xaxis.set_ticks(np.arange(0, 1.0001, 0.2))
             axs[i, j].yaxis.set_ticks(np.arange(0, 1.0001, 0.2))
+            axs[i, j].set_xticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'], fontsize=12, fontfamily='Arial')
+            axs[i, j].set_yticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'], fontsize=12, fontfamily='Arial')
+            if i == 2:
+                axs[i, j].set_xlabel('Recall')
 
             axs[i, j] = sns.scatterplot(x='Sensitivity', y='Precision',
                                         hue='Tool',  # different colors by group
@@ -120,10 +132,61 @@ def prokaryote_all():
                                         s=marker_size,  # marker size
                                         data=data[i][j], ax=axs[i, j])
 
-            axs[i, j].text(0.5, 0.2, rank[i], fontsize=12, fontweight='bold', fontfamily='Arial', color='gray',
-                        horizontalalignment='center', verticalalignment='top', transform=axs[i, j].transAxes)
+            # axs[i, j].text(0.5, 0.2, rank[i], fontsize=12, fontweight='bold', fontfamily='Arial', color='gray',
+            #             horizontalalignment='center', verticalalignment='top', transform=axs[i, j].transAxes)
             axs[i, j].text(x_pos, y_pos, panels[i][j], fontsize=13, fontweight='bold', fontfamily='Arial')
 
+            # ZOOM IN
+            if i < 3:
+                axins = inset_axes(axs[i][j], loc=zoom_locs[i][j], width=zoom_widths[i][j],
+                                   height=zoom_heights[i][j], borderpad=0.5)
+
+                axins.tick_params(axis='both', which='major', pad=0, labelsize=12)
+                axins = sns.scatterplot(x='Sensitivity', y='Precision',
+                                        hue='Tool',  # different colors by group
+                                        style='Tool',  # different shapes by group
+                                        hue_order=order,
+                                        style_order=order,
+                                        edgecolor='black',
+                                        palette=colors,
+                                        markers=markers,
+                                        s=marker_size,  # marker size
+                                        data=data[i][j], ax=axins)
+
+                # Adjust the size of the zoomed-in plot
+                axins.set_xlim(zoom_xlims_min[i][j], zoom_xlims_max[i][j])
+                axins.set_ylim(zoom_ylims_min[i][j], zoom_ylims_max[i][j])
+
+                # Draw a box around the inset axes in the parent axes and
+                mark_inset(axs[i][j], axins, loc1=zoom_loc1s[i][j], loc2=zoom_loc2s[i][j], fc="none", ec="0", lw=1)
+                axins.tick_params(color='black')
+                for spine in axins.spines.values():
+                    spine.set_edgecolor('black')
+                    spine.set_linewidth(1)
+
+                # Remove legend
+                axins.legend_.remove()
+
+                # Remove x and y labels
+                axins.set_xlabel('')
+                axins.set_ylabel('')
+                axins.xaxis.set_ticks(np.arange(zoom_xlims_min[i][j], zoom_xlims_max[i][j] + 0.01, 0.1))
+                axins.yaxis.set_ticks(np.arange(zoom_ylims_min[i][j], zoom_ylims_max[i][j] + 0.01, 0.1))
+                xtick_labels = axins.get_xticklabels()
+                ytick_labels = axins.get_yticklabels()
+                for label in range(len(xtick_labels)-1):
+                    xtick_labels[label] = ''
+                for label in range(len(ytick_labels)-1):
+                    ytick_labels[label] = ''
+                xtick_labels[0] = str(zoom_xlims_min[i][j])
+                # xtick_labels[-1] = str(zoom_xlims_max[i][j])
+                ytick_labels[0] = str(zoom_ylims_min[i][j])
+                # ytick_labels[-1] = str(1)
+                axins.set_xticklabels(xtick_labels)
+                axins.set_yticklabels(ytick_labels)
+
+
+            # Legend
             if i == 2 and j == 3:
                 axs[i, j].legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., fontsize=14, frameon=False,
                                  markerscale=1.8)
