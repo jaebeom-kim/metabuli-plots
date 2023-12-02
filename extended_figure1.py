@@ -46,15 +46,18 @@ def prokaryote_all():
     genus_sequel_data = genus_sequel_data[genus_sequel_data['Rank'] == 'Genus']
 
     # Scatter plot parameters
-    order = ["Metabuli", "Metabuli-P", 'KrakenUniq', 'Kraken2',
-             'Centrifuge', 'Metamaps', 'Kraken2X',
-             'Kaiju', 'MMseqs2', 'Hybrid']
-    markers = ['o', 's', 'H', 'D',
-               'v', ">", 'P',
-               'X', 'd']
-    colors = ['#D81B1B', '#E51EC3', '#FFC208', '#FFC208',
-              '#FFC208', '#FFC208', '#38BF66',
-              '#38BF66', '#38BF66', 'dimgray']
+    order = ["Metabuli", "Metabuli-P",
+             'KrakenUniq', 'Kraken2', 'Centrifuge',
+             'MetaMaps', 'MetaMaps_EM',
+             'Kraken2X', 'Kaiju', 'MMseqs2', 'Hybrid']
+    markers = ['o', 's',
+               'H', 'D', 'v',
+               ">", "<",
+               'P', 'X', 'd', 'o']
+    colors = ['#D81B1B', '#E51EC3',
+              '#FFC208', '#FFC208', '#FFC208',
+              '#FFC208', '#FFC208',
+              '#38BF66', '#38BF66', '#38BF66', 'dimgray']
 
     marker_size = 100
 
@@ -70,41 +73,41 @@ def prokaryote_all():
               ['i', 'j', 'k', 'l']]
     x_pos = 0
     y_pos = 1.1
-    zoom_xlims_min = [[0.3, 0.5, 0.4, 0.4],
-                      [0.8, 0.8, 0.8, 0.7],
-                      [0.4, 0.5, 0.25, 0.1]]
+    zoom_xlims_min = [[0.35, 0.55, 0.45, 0.4],
+                      [0.8, 0.88, 0.8, 0.75],
+                      [0.41, 0.55, 0.25, 0.25]]
 
-    zoom_xlims_max = [[0.5, 0.8, 0.7, 0.6],
-                      [0.9, 1, 0.9, 0.9],
-                      [0.51, 0.75, 0.47, 0.32]]
+    zoom_xlims_max = [[0.45, 0.75, 0.65, 0.6],
+                      [0.9, 0.98, 0.9, 0.85],
+                      [0.51, 0.75, 0.35, 0.35]]
 
     zoom_ylims_min = [[0.9, 0.8, 0.8, 0.8],
-                      [0.9, 0.9, 0.9, 0.8],
-                      [0.6, 0.6, 0.55, 0.45]]
+                      [0.9, 0.9, 0.9, 0.88],
+                      [0.63, 0.65, 0.55, 0.45]]
 
     zoom_ylims_max = [[1.01, 1.01, 1, 1],
-                      [1, 1, 1, 1],
-                      [0.85, 0.75, 0.65, 0.75]]
+                      [1, 1, 1, 0.98],
+                      [0.83, 0.75, 0.65, 0.55]]
 
     zoom_locs = [['lower right', 4, 4, 4],
                  [4, 4, 4, 4],
-                 [1, 3, 1, 1]]
+                 [1, 4, 4, 4]]
 
-    zoom_loc1s = [[2, 1, 1, 1],
+    zoom_loc1s = [[3, 1, 1, 1],
                   [1, 1, 1, 1],
-                  [3, 4, 2, 2]]
+                  [3, 1, 3, 2]]
 
     zoom_loc2s = [[1, 2, 2, 2],
                   [2, 2, 2, 2],
-                  [2, 2, 3, 3]]
+                  [2, 2, 1, 3]]
 
     zoom_widths = [[1.2, 1.2, 1.2, 1.2],
                    [1.2, 1.2, 1.2, 1.2],
-                   [0.8, 0.8, 0.6, 0.8]]
+                   [0.7, 1.4, 0.8, 0.8]]
 
     zoom_heights = [[1.2, 1.2, 1.2, 1.2],
                     [1.2, 1.2, 1.2, 1.2],
-                    [1.2, 1.2, 1.2, 1.2]]
+                    [1.4, 0.7, 0.8, 0.8]]
 
     rank = ['Subspecies', 'Species', 'Genus']
     for i in range(3):
@@ -195,14 +198,14 @@ def prokaryote_all():
 
                 labels2.insert(0, "Both")
                 labels2.insert(3, "DNA-based")
-                labels2.insert(8, "AA-based")
+                labels2.insert(9, "AA-based")
 
                 handles.insert(0, r)
                 handles.insert(3, r)
-                handles.insert(8, r)
+                handles.insert(9, r)
 
-                handles = handles[3:8] + handles[8:12] + handles[0:3] + handles[12:]
-                labels2 = labels2[3:8] + labels2[8:12] + labels2[0:3] + labels2[12:]
+                handles = handles[3:9] + handles[9:13] + handles[0:3] + handles[13:]
+                labels2 = labels2[3:9] + labels2[9:13] + labels2[0:3] + labels2[13:]
 
                 axs[i, j].legend(handles, labels2, loc=2, markerscale=1.8, fontsize=13,
                                                 handletextpad=0.5, handlelength=0.7, edgecolor='black', ncol=1,
