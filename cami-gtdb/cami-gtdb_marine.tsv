@@ -11,6 +11,8 @@ Kraken2X	Genus	0.974	0.849
 Kraken2X	Species	0.937	0.707
 MMseqs2	Genus	0.987	0.744
 MMseqs2	Species	0.969	0.519
+Hybrid	Genus	0.988	0.945
+Hybrid	Species	0.956	0.887
 Metabuli-P	Genus	0.9931152	0.9416795
 Metabuli-P	Species	0.9805615	0.8283699
 Metabuli	Genus	0.9852467	0.9499132
