@@ -19,8 +19,8 @@ def cami_gtdb() -> None:
     # Set figure size
     fig, axs = plt.subplots(1, 1, sharex='all', sharey='all', figsize=(3.7, 3.5))
     markers = ['o', 's', 'H', 'D', 'v', 'P', 'X', 'd']
-    colors = ['#D81B1B', '#E51EC3', '#FFC208', '#FFC208', '#FFC208', '#38BF66', '#38BF66', '#38BF66']
-    order = ["Metabuli", "Metabuli-P", 'KrakenUniq', 'Kraken2', 'Centrifuge', 'Kraken2X', 'Kaiju', 'MMseqs2']
+    colors = ['#D81B1B', '#E51EC3', '#FFC208', '#FFC208', '#FFC208', '#38BF66', '#38BF66', '#38BF66', 'dimgray']
+    order = ["Metabuli", "Metabuli-P", 'KrakenUniq', 'Kraken2', 'Centrifuge', 'Kraken2X', 'Kaiju', 'MMseqs2', 'Hybrid']
     rank_order = ['Genus', 'Species']
     marker_size = 120
 
@@ -87,10 +87,10 @@ def cami_gtdb() -> None:
     axin1.xaxis.get_major_locator().set_params(nbins=1)
 
     # Genus ZOOM
-    axin2 = inset_axes(axs, width=0.9, height=0.9, borderpad=0.5, bbox_transform=axs.transAxes,
+    axin2 = inset_axes(axs, width=1.1, height=0.55, borderpad=0.5, bbox_transform=axs.transAxes,
                        bbox_to_anchor=(1, 0.7))
     axin2.set_xlim(0.6, 0.8)
-    axin2.set_ylim(0.88, 1)
+    axin2.set_ylim(0.88, 0.98)
     axin2 = sns.scatterplot(x='Sensitivity', y='Precision',
                             hue='Tool',  # different colors by group
                             style='Tool',  # different shapes by group
@@ -103,7 +103,7 @@ def cami_gtdb() -> None:
                             data=data, ax=axin2)
     # different shapes by group
 
-    mark_inset(axs, axin2, loc1=1, loc2=3, fc="none", ec="0", lw=1)
+    mark_inset(axs, axin2, loc1=1, loc2=2, fc="none", ec="0", lw=1)
     axin2.legend_.remove()
     for spine in axin2.spines.values():
         spine.set_edgecolor('black')
@@ -112,8 +112,8 @@ def cami_gtdb() -> None:
     axin2.set_ylabel('')
     axin2.set_yticklabels(['', ''])
     axin2.set_xticklabels(['', '', '', '', '', ''])
-    axin2.yaxis.get_major_locator().set_params(nbins=1)
-    axin2.xaxis.get_major_locator().set_params(nbins=1)
+    # axin2.yaxis.get_major_locator().set_params(nbins=1)
+    # axin2.xaxis.get_major_locator().set_params(nbins=1)
     # axin1.text(0.99, 0.9, '1.0', ha='right', va='bottom', fontsize=15, fontfamily='Arial')
     # # axins.text(0.51, 0.9, '0.5', ha='left', va='bottom', fontsize=15, fontfamily='Arial')
     # # axins.text(0.5, 0.9, '0.9', ha='left', va='bottom', fontsize=15, fontfamily='Arial')
@@ -133,7 +133,8 @@ def cami_gtdb() -> None:
     axs.tick_params(axis='x', which='both', labelbottom=True)
     plt.tight_layout()
     # plt.subplots_adjust(left=0.05, right=0.98, bottom=0.2, top=0.9)
-    plt.savefig('./plots/figure2e.png', dpi=500)
+    # plt.savefig('./plots/figure2e.png', dpi=500)
+    plt.savefig('./revision/figure2e.svg', format="svg")
     plt.show()
 
 

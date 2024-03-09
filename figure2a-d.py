@@ -29,13 +29,13 @@ def figure2_AToD():
     # gtdb_in_long = pd.read_csv('gtdb/revision/inclusion/inclusion_sequel_ccs.tsv', sep='\t')
     gtdb_in_long = pd.read_csv('gtdb/revision/subspecies_exclusion/ss-ex_sequel_ccs.tsv', sep='\t')
     gtdb_in_long = gtdb_in_long[gtdb_in_long['Rank'] == 'Species']
-    gtdb_in_long = gtdb_in_long[gtdb_in_long['Tool'] != 'Metamaps_EM']
+    gtdb_in_long = gtdb_in_long[gtdb_in_long['Tool'] != 'MetaMaps_EM']
 
     gtdb_excl = pd.read_csv('gtdb/revision/species_exclusion/sp-ex_short.tsv', sep='\t')
     gtdb_excl = gtdb_excl[gtdb_excl['Rank'] == 'Genus']
     gtdb_ex_long = pd.read_csv('gtdb/revision/species_exclusion/sp-ex_sequel_ccs.tsv', sep='\t')
     gtdb_ex_long = gtdb_ex_long[gtdb_ex_long['Rank'] == 'Genus']
-    gtdb_ex_long = gtdb_ex_long[gtdb_ex_long['Tool'] != 'Metamaps_EM']
+    gtdb_ex_long = gtdb_ex_long[gtdb_ex_long['Tool'] != 'MetaMaps_EM']
 
 
     # Load COVID-19 data
@@ -45,7 +45,7 @@ def figure2_AToD():
 
     # Scatter plot parameters
     order = ["Metabuli", "Metabuli-P", 'KrakenUniq', 'Kraken2',
-             'Centrifuge', 'Metamaps', 'Kraken2X',
+             'Centrifuge', 'MetaMaps', 'Kraken2X',
              'Kaiju', 'MMseqs2', 'Hybrid']
     markers = ['o', 's', 'H', 'D',
                'v', ">", 'P',
@@ -393,7 +393,8 @@ def figure2_AToD():
     #          fontsize=11)
 
     plt.subplots_adjust(left=0.05, right=0.98, bottom=0.2, top=0.9)
-    plt.savefig('./revision/figure2a-d.png', dpi=500, bbox_inches='tight')
+    plt.savefig('./revision/figure2a-d_0308.svg', format="svg")
+    # plt.savefig('./revision/figure2a-d_0308.png', dpi=500, bbox_inches='tight')
     plt.show()
 
 

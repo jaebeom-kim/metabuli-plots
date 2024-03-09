@@ -36,6 +36,7 @@ def venn_hatch():
     # g = b * (1 - len(kraken2_set.intersection(kaiju_set) - metabuli_set) / len(kaiju_set.intersection(kraken2_set)))
     # print(a, b, c, d, e, f, g, h)
 
+    # (c+e) * b =
     x = 4  # x = 4
     y = 4
     a = 0.16346091498488724
@@ -285,6 +286,7 @@ def venn_multi():
                 color='black', weight='bold', fontsize=13,
                 fontfamily='Arial', verticalalignment='bottom',
                 horizontalalignment='center', rotation=0)
+    plt.savefig("./revision/cami_venn.svg", format="svg")
 
     plt.show()
 

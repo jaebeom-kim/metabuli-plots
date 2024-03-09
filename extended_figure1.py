@@ -214,7 +214,7 @@ def prokaryote_all():
                 axs[i, j].get_legend().remove()
 
     plt.tight_layout()
-    plt.savefig('./revision/prokaryote_all.png', dpi=300)
+    plt.savefig('./revision/prokaryote_all.png', dpi=500)
 
     plt.show()
 

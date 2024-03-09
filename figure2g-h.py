@@ -127,7 +127,7 @@ def venn_marine_short():
 
     X = np.array([0, x])
     Y = np.array([0, y])
-    plt.figure(figsize=(4, 4))
+    plt.figure(figsize=(4, 3.7))
     plt.plot(X, Y, color='None')
 
     hatches = ['//', '\\\\', '||', '--', '++', 'xx', 'oo', 'OO', '..', '**']
@@ -165,25 +165,28 @@ def venn_marine_short():
                 color='black', weight='bold', fontsize=13,
                 fontfamily='Arial', verticalalignment='bottom',
                 horizontalalignment='center', rotation=0)
+
+    plt.savefig('./revision/marine_short.svg', format="svg")
     plt.show()
+
 
 
 def venn_human_short():
     x = 4 # x = 4
     y = 4
     # Load data
-    metabuli_file_name = './realdata/metabuli_human_short_classified.txt'
-    kraken2_file_name = './realdata/kraken2_human_short_classified.txt'
-    kaiju_file_name = './realdata/kaiju_human_short_classified.txt'
-    #
-    kaiju_set = set(pd.read_csv(kaiju_file_name, sep='\t', header=None)[0].tolist())
-    kraken2_set = set(pd.read_csv(kraken2_file_name, sep='\t', header=None)[0].tolist())
-    metabuli_set = set(pd.read_csv(metabuli_file_name, sep='\t', header=None)[0].tolist())
+    # metabuli_file_name = './realdata/metabuli_human_short_classified.txt'
+    # kraken2_file_name = './realdata/kraken2_human_short_classified.txt'
+    # kaiju_file_name = './realdata/kaiju_human_short_classified.txt'
+    # #
+    # kaiju_set = set(pd.read_csv(kaiju_file_name, sep='\t', header=None)[0].tolist())
+    # kraken2_set = set(pd.read_csv(kraken2_file_name, sep='\t', header=None)[0].tolist())
+    # metabuli_set = set(pd.read_csv(metabuli_file_name, sep='\t', header=None)[0].tolist())
     #
 
     #
-    kaiju_kr2_union = kaiju_set.union(kraken2_set)
-    print(len(metabuli_set - kaiju_kr2_union))
+    # kaiju_kr2_union = kaiju_set.union(kraken2_set)
+    # print(len(metabuli_set - kaiju_kr2_union))
 
     # a = y * len(metabuli_set - kaiju_kr2_union) / len(metabuli_set.union(kaiju_kr2_union))
     # b = y - a
@@ -244,6 +247,7 @@ def venn_human_short():
                 color='black', weight='bold', fontsize=13,
                 fontfamily='Arial', verticalalignment='bottom',
                 horizontalalignment='center', rotation=0)
+    plt.savefig("./revision/human_short.svg", format="svg")
     plt.show()
 
 
@@ -406,8 +410,181 @@ def venn_human_hifi():
                 horizontalalignment='center', rotation=0)
     plt.show()
 
+
+def venn_mock_ont():
+    x = 4  # x = 4
+    y = 4
+    # Load data
+    metabuli_file_name = './realdata/metabuli_mock_ont.txt'
+    kraken2_file_name = './realdata/kraken2_mock_ont.txt'
+    kraken2x_file_name = './realdata/kraken2x_mock_ont.txt'
+    #
+    kraken2x_set = set(pd.read_csv(kraken2x_file_name, sep='\t', header=None)[0].tolist())
+    kraken2_set = set(pd.read_csv(kraken2_file_name, sep='\t', header=None)[0].tolist())
+    metabuli_set = set(pd.read_csv(metabuli_file_name, sep='\t', header=None)[0].tolist())
+    #
+
+    #
+    kr2x_kr2_union = kraken2x_set.union(kraken2_set)
+    print(len(metabuli_set - kr2x_kr2_union))
+    print(len(kraken2x_set - kraken2_set - metabuli_set))
+
+    a = y * len(metabuli_set - kr2x_kr2_union) / len(metabuli_set.union(kr2x_kr2_union))
+    b = y - a
+    c = x * len(kraken2x_set - kraken2_set) / len(kr2x_kr2_union)
+    d = x * len(kraken2_set - kraken2x_set) / len(kr2x_kr2_union)
+    e = x - c - d
+    f = b * (1 - len(kraken2x_set - kraken2_set - metabuli_set) / len(kraken2x_set - kraken2_set))
+    h = b * (1 - len(kraken2_set - kraken2x_set - metabuli_set) / len(kraken2_set - kraken2x_set))
+    g = b * (1 - len(kraken2_set.intersection(kraken2x_set) - metabuli_set) / len(
+        kraken2x_set.intersection(kraken2_set)))
+    print(a, b, c, d, e, f, g, h)
+    # 0.01144923061671891
+    # 3.988550769383281
+    # 0.13702095548382073
+    # 0.0030663640229258624
+    # 3.8599126804932533
+    # 3.599158537339009
+    # 3.987620006126804
+    # 3.6862934063909543
+
+    X = np.array([0, x])
+    Y = np.array([0, y])
+    plt.figure(figsize=(4, 3.7))
+    plt.plot(X, Y, color='None')
+
+    hatches = ['//', '\\\\', '||', '--', '++', 'xx', 'oo', 'OO', '..', '**']
+
+    al = 1
+    metabuli_only = patches.Rectangle((0, x - a), x, a, edgecolor='black', facecolor='red', alpha=al)
+    plt.gca().add_patch(metabuli_only)
+
+    kaiju_kr2 = patches.Rectangle((0, 0), c, b, edgecolor='black', facecolor='green', alpha=al)
+    plt.gca().add_patch(kaiju_kr2)
+
+    kaiju_kr2_inter = patches.Rectangle((c, 0), e, b, edgecolor='black', facecolor='gray', alpha=al)
+    plt.gca().add_patch(kaiju_kr2_inter)
+
+    kr2_kaiju = patches.Rectangle((c + e, 0), d, b, edgecolor='black', facecolor='gold', alpha=al)
+    plt.gca().add_patch(kr2_kaiju)
+    # lightsalmon
+    kaiju_coverd = patches.Rectangle((0, b - f), c, f, edgecolor='black', facecolor='lightsalmon',
+                                     alpha=al)  # , hatch='///')
+    plt.gca().add_patch(kaiju_coverd)
+    plt.text(c / 2 + 0.2, b - f + 0.05, str(round(f / b * 100, 1)) + '%', transform=plt.gca().transData,
+             color='black', weight='bold', fontsize=13,
+             fontfamily='Arial', verticalalignment='bottom',
+             horizontalalignment='left', rotation=90)
+
+    kr2_coverd = patches.Rectangle((c + e, b - h), d, h, edgecolor='black', facecolor='lightsalmon',
+                                   alpha=al)  # ,hatch='///')
+    plt.gca().add_patch(kr2_coverd)
+    plt.text(c + e - 0.1, b - h + 0.05, str(round(h / b * 100, 1)) + '%', transform=plt.gca().transData,
+             color='black', weight='bold', fontsize=13,
+             fontfamily='Arial', verticalalignment='bottom',
+             horizontalalignment='center', rotation=90)
+
+    kaiju_kr2_coverd = patches.Rectangle((c, b - g), e, g, edgecolor='black', facecolor='lightsalmon',
+                                         alpha=al)  # , hatch='///')
+    plt.gca().add_patch(kaiju_kr2_coverd)
+    plt.text(c + e / 2, b - g + 0.05, str(round(g / b * 100, 1)) + '%', transform=plt.gca().transData,
+             color='black', weight='bold', fontsize=13,
+             fontfamily='Arial', verticalalignment='bottom',
+             horizontalalignment='center', rotation=0)
+    plt.savefig('./plots/mock_ont.png', dpi=500)
+    plt.show()
+
+
+def venn_marine_ont():
+    x = 4
+    y = 4
+    # Load data
+    metabuli_file_name = './realdata/metabuli_marine_ont_classified.txt'
+    kraken2_file_name = './realdata/kraken2_marine_ont_classified.txt'
+    kraken2x_file_name = './realdata/kraken2x_marine_ont_classified.txt'
+
+    kraken2x_set = set(pd.read_csv(kraken2x_file_name, sep='\t', header=None)[0].tolist())
+    kraken2_set = set(pd.read_csv(kraken2_file_name, sep='\t', header=None)[0].tolist())
+    metabuli_set = set(pd.read_csv(metabuli_file_name, sep='\t', header=None)[0].tolist())
+
+    kr2x_kr2_union = kraken2x_set.union(kraken2_set)
+    print(len(metabuli_set - kr2x_kr2_union))
+    print(len(kraken2x_set - kraken2_set - metabuli_set))
+
+    a = y * len(metabuli_set - kr2x_kr2_union) / len(metabuli_set.union(kr2x_kr2_union))
+    b = y - a
+    c = x * len(kraken2x_set - kraken2_set) / len(kr2x_kr2_union)
+    d = x * len(kraken2_set - kraken2x_set) / len(kr2x_kr2_union)
+    e = x - c - d
+    f = b * (1 - len(kraken2x_set - kraken2_set - metabuli_set) / len(kraken2x_set - kraken2_set))
+    h = b * (1 - len(kraken2_set - kraken2x_set - metabuli_set) / len(kraken2_set - kraken2x_set))
+    g = b * (1 - len(kraken2_set.intersection(kraken2x_set) - metabuli_set) / len(
+        kraken2x_set.intersection(kraken2_set)))
+    print(a, b, c, d, e, f, g, h)
+
+    # a=0.7658146818685507
+    # b=3.2341853181314493
+    # c=2.008768247101048
+    # d=0.12454795094672852
+    # e=1.8666838019522236
+    # f=2.555952456751044
+    # g=3.1851580637495656
+    # h=2.791982748452847
+
+
+    X = np.array([0, x])
+    Y = np.array([0, y])
+    plt.figure(figsize=(4, 3.7))
+    plt.plot(X, Y, color='None')
+
+    hatches = ['//', '\\\\', '||', '--', '++', 'xx', 'oo', 'OO', '..', '**']
+
+    al = 1
+    metabuli_only = patches.Rectangle((0, x - a), x, a, edgecolor='black', facecolor='red', alpha=al)
+    plt.gca().add_patch(metabuli_only)
+
+    kaiju_kr2 = patches.Rectangle((0, 0), c, b, edgecolor='black', facecolor='green', alpha=al)
+    plt.gca().add_patch(kaiju_kr2)
+
+    kaiju_kr2_inter = patches.Rectangle((c, 0), e, b, edgecolor='black', facecolor='gray', alpha=al)
+    plt.gca().add_patch(kaiju_kr2_inter)
+
+    kr2_kaiju = patches.Rectangle((c + e, 0), d, b, edgecolor='black', facecolor='gold', alpha=al)
+    plt.gca().add_patch(kr2_kaiju)
+    # lightsalmon
+    kaiju_coverd = patches.Rectangle((0, b - f), c, f, edgecolor='black', facecolor='lightsalmon',
+                                     alpha=al)  # , hatch='///')
+    plt.gca().add_patch(kaiju_coverd)
+    plt.text(c / 2, b - f, str(round(f / b * 100, 1)) + '%', transform=plt.gca().transData,
+             color='black', weight='bold', fontsize=13,
+             fontfamily='Arial', verticalalignment='bottom',
+             horizontalalignment='center')
+
+    kr2_coverd = patches.Rectangle((c + e, b - h), d, h, edgecolor='black', facecolor='lightsalmon',
+                                   alpha=al)  # ,hatch='///')
+    plt.gca().add_patch(kr2_coverd)
+    plt.text(c + e - 0.1, b - h + 0.05, str(round(h / b * 100, 1)) + '%', transform=plt.gca().transData,
+             color='black', weight='bold', fontsize=13,
+             fontfamily='Arial', verticalalignment='bottom',
+             horizontalalignment='center', rotation=90)
+
+    kaiju_kr2_coverd = patches.Rectangle((c, b - g), e, g, edgecolor='black', facecolor='lightsalmon',
+                                         alpha=al)  # , hatch='///')
+    plt.gca().add_patch(kaiju_kr2_coverd)
+    plt.text(c + e / 2, b - g + 0.05, str(round(g / b * 100, 1)) + '%', transform=plt.gca().transData,
+             color='black', weight='bold', fontsize=13,
+             fontfamily='Arial', verticalalignment='bottom',
+             horizontalalignment='center', rotation=0)
+
+    plt.savefig('./plots/marine_ont.png', dpi=500)
+    #7480856
+    plt.show()
+
+
 if __name__ == '__main__':
     # venn_hatch()
     # venn_human_short()
     # venn_marine_short()
-    venn_marine_hifi()
+    # venn_marine_hifi()
+    # venn_mock_ont()
+    venn_marine_ont()
